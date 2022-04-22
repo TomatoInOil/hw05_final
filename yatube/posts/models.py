@@ -94,6 +94,18 @@ class Follow(models.Model):
         verbose_name='Верный читатель',
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='excluding_duplicate_subscriptions'
+            ),
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('author')),
+                name='not_the_author'
+            ),
+        ]
+
     def __str__(self) -> str:
         follower_username = self.user.username
         following_username = self.author.username

@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -168,10 +170,13 @@ def profile_follow(request, username):
     """Подписка на автора."""
     follower = request.user
     following = get_object_or_404(User, username=username)
-    Follow.objects.create(
-        author=following,
-        user=follower,
-    )
+    try:
+        Follow.objects.create(
+            author=following,
+            user=follower,
+        )
+    except IntegrityError:
+        return HttpResponseForbidden()
     return redirect('posts:profile', username)
 
 

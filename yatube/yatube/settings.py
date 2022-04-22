@@ -152,6 +152,7 @@ FOLLOW_TEMPLATE = 'posts/follow.html'
 
 NOT_FOUND_TEMPLATE = 'core/404.html'
 FORBIDDEN_TEMPLATE = 'core/403csrf.html'
+INTERNAL_SERVER_ERROR = 'errors/500.html'
 
 # Post settings
 
