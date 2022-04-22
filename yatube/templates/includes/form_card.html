@@ -1,0 +1,20 @@
+<div class="row justify-content-center">
+  <div class="col-md-8 p-5">
+    <div class="card">
+      <div class="card-header">
+        {{ card_header }}
+      </div>
+      <div class="card-body">
+        {% include 'includes/form_errors.html' %}
+        <form method="post" action="{{ action }}" {{ enctype }}>
+          {% include 'includes/form.html' %}
+          <div class="col-md-6 offset-md-4">
+            <button type="submit" class="btn btn-primary">
+              {{ button }}
+            </button>
+          </div>
+        </form>
+      </div> 
+    </div> 
+  </div> 
+</div> 

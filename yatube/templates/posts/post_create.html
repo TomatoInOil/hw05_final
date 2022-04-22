@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+  {% if is_edit %}
+    Редактирование записи
+  {% else %}
+    Новая запись
+  {% endif %}
+{% endblock title %}
+{% block content %}
+  <main>
+    <div class="container py-5"> 
+      {% if is_edit %}
+        {% with card_header='Редактирование записи' action=action_url enctype='enctype="multipart/form-data"' button='Сохранить'%}
+          {% include 'includes/form_card.html' %}
+        {% endwith %}
+      {% else %}
+        {% with card_header='Создание новой записи' action=action_url enctype='enctype="multipart/form-data"' button='Добавить'%}
+          {% include 'includes/form_card.html' %}
+        {% endwith %}
+      {% endif %}
+    </div>
+  </main>
+{% endblock content %}

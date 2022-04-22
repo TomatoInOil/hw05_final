@@ -1,0 +1,35 @@
+{% load static %}
+<div class="container">
+  <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a href={% url 'posts:index' %} class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+      <img src={% static "img/logo.png" %} class="bi me-2" width="30" height="30"></img>
+      <span class="fs-4"><span style="color:red">Ya</span>tube</span>
+    </a>
+
+    <ul class="nav">
+      {% with url_name=request.resolver_match.url_name %}
+      <li><a href="{% url 'posts:index' %}" class="nav-link px-2 {% if url_name == 'index' %}link-secondary{% else %}link-dark{% endif %}">Главная</a></li>
+      <li><a href="{% url 'about:author' %}" class="nav-link px-2 {% if url_name == 'author' %}link-secondary{% else %}link-dark{% endif %}">Об авторе</a></li>
+      <li><a href="{% url 'about:tech' %}" class="nav-link px-2 {% if url_name == 'tech' %}link-secondary{% else %}link-dark{% endif %}">Технологии</a></li>
+      {% if request.user.is_authenticated %}
+        <li><a href="{% url 'posts:post_create' %}" class="nav-link px-2 {% if url_name == 'post_create' %}link-secondary{% else %}link-dark{% endif %}">Новая запись</a></li>
+      {% endif %}
+      {% endwith %}
+    </ul>
+
+    {% if request.user.is_authenticated %}
+    <div class="col-12 col-lg-auto mb-2 mb-md-0 text-center">
+      Привет, {{ request.user.get_username }}!
+    </div>
+      <div class="col-md-3 text-end">
+        <a class="btn btn-outline-primary me-2" href="{% url 'users:password_change' %}">Изменить пароль</a>
+        <a class="btn btn-primary" href="{% url 'users:logout' %}">Выйти</a>
+      </div>
+    {% else %}
+      <div class="col-md-3 text-end">
+        <a class="btn btn-outline-primary me-2" href="{% url 'users:login' %}">Вход</a>
+        <a class="btn btn-primary" href="{% url 'users:signup' %}">Регистрация</a>
+      </div>
+    {% endif %}
+  </header>
+</div>
