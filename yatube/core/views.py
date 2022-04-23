@@ -14,9 +14,14 @@ def page_not_found(request, exception):
     )
 
 
+def csrf_failure(request, reason=''):
+    """Страница ошибки 403 (CSRF_FAILURE)."""
+    return render(request, settings.CSRF_FAILURE_TEMPLATE)
+
+
 def permission_denied(request, reason=''):
-    """Страница ошибки 403 (FORBIDDEN)."""
-    return render(request, settings.FORBIDDEN_TEMPLATE)
+    """Страница ошибки 403 (PERMISSION DENIED)."""
+    return render(request, settings.PERMISSION_DENIED_TEMPLATE)
 
 
 def server_error(request, exception=None):

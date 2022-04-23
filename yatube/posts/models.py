@@ -18,6 +18,10 @@ class Group(models.Model):
         'Описание группы',
     )
 
+    class Meta:
+        verbose_name = 'Сообщество'
+        verbose_name_plural = 'Сообщества'
+
     def __str__(self):
         return self.title
 
@@ -52,6 +56,10 @@ class Post(PubDateModel):
                    'Рекомендуемый размер картинки: 960x339'),
     )
 
+    class Meta(PubDateModel.Meta):
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
+
     def __str__(self) -> str:
         return self.text[:settings.POST_STR_LENGTH]
 
@@ -62,17 +70,23 @@ class Comment(PubDateModel):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
-        related_name='comments'
+        related_name='comments',
+        verbose_name='Пост',
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='comments',
+        verbose_name='Автор',
     )
     text = models.TextField(
         'Текст комментария',
         help_text='Расскажите, что вы думаете насчёт данного поста',
     )
+
+    class Meta(PubDateModel.Meta):
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
     def __str__(self) -> str:
         return self.text[:settings.COMMENT_STR_LENGTH]
@@ -95,6 +109,8 @@ class Follow(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'],

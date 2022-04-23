@@ -82,7 +82,6 @@ class PostsViewsTest(TestCase):
         response = self.client.get(PostsViewsTest.POST_DETAILS_URL)
         field_and_expected_context = {
             'post': Post.objects.filter(pk=PostsViewsTest.POST_ID).get(),
-            'post_count': const.AUTHOR_POST_COUNT,
             'post_title': const.ONE_LETTER_WORD * settings.POST_TITLE_LENGTH,
         }
         for field_name, expected_context in field_and_expected_context.items():

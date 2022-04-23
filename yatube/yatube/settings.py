@@ -151,8 +151,9 @@ FOLLOW_TEMPLATE = 'posts/follow.html'
 # location of templates for "core"
 
 NOT_FOUND_TEMPLATE = 'core/404.html'
-FORBIDDEN_TEMPLATE = 'core/403csrf.html'
+PERMISSION_DENIED_TEMPLATE = 'errors/403.html'
 INTERNAL_SERVER_ERROR = 'errors/500.html'
+CSRF_FAILURE_TEMPLATE = 'core/403_csrf.html'
 
 # Post settings
 

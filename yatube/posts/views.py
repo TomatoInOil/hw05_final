@@ -16,7 +16,7 @@ def index(request):
     """
     template = settings.INDEX_TEMPLATE
 
-    post_list = Post.objects.all()
+    post_list = Post.objects.select_related('group').all()
     page_obj = create_page_obj(post_list, request)
 
     context = {
@@ -47,21 +47,17 @@ def profile(request, username):
     template = settings.PROFILE_TEMPLATE
 
     author = get_object_or_404(User, username=username)
-    post_list = author.posts.all()
+    post_list = author.posts.select_related('group').all()
     page_obj = create_page_obj(post_list, request)
 
     following = False
     if request.user.is_authenticated:
-        if request.user.follower.filter(author=author):
-            following = True
-
-    post_count = author.posts.count()
+        following = request.user.follower.filter(author=author).exists()
 
     context = {
         'page_obj': page_obj,
         'author': author,
         'following': following,
-        'post_count': post_count,
     }
     return render(request, template, context)
 
@@ -69,7 +65,6 @@ def profile(request, username):
 def post_details(request, post_id):
     """Рендер страницы отдельного поста."""
     post = get_object_or_404(Post, pk=post_id)
-    post_count = post.author.posts.count()
 
     comments_list = post.comments.all()
     page_obj = create_page_obj(comments_list, request)
@@ -77,7 +72,6 @@ def post_details(request, post_id):
     template = settings.POST_DETAILS_TEMPLATE
     context = {
         'post': post,
-        'post_count': post_count,
         'post_title': post.text[:settings.POST_TITLE_LENGTH],
         'form': CommentForm(),
         'page_obj': page_obj,
