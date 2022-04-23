@@ -3,6 +3,7 @@ import tempfile
 
 from django import forms
 from django.conf import settings
+from django.core.cache import cache
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
@@ -203,7 +204,7 @@ class CacheTest(TestCase):
         super().setUpClass()
         cls.author = create_user_object(const.AUTHOR_USERNAME)
 
-    def test_posts_from_index_page_are__cached(self):
+    def test_posts_from_index_page_are_cached(self):
         """Посты на главной странице сохраняются в кэш."""
         post: Post = Post.objects.create(
             text=const.POST_TEXT,
@@ -217,6 +218,13 @@ class CacheTest(TestCase):
             first_response.content,
             response_after_deletion.content,
             msg='Пост пропал со страницы после удаления.'
+        )
+        cache.clear()
+        response_after_clearing_cache = self.client.get(const.INDEX_URL)
+        self.assertNotEqual(
+            response_after_deletion.content,
+            response_after_clearing_cache.content,
+            msg='Пост не пропал после очистки кэша.'
         )
 
 
@@ -235,9 +243,9 @@ class FollowTest(TestCase):
         self.author_client = Client()
         self.author_client.force_login(FollowTest.author)
 
-    def test_authorized_user_can_ubscribe_to_other_users(self):
+    def test_authorized_user_can_subscribe_to_other_users(self):
         """Авторизованный пользователь может подписываться
-        на других пользователей и удалять их из подписок.
+        на других пользователей.
         """
         follow_count = FollowTest.follower.follower.count()
         self.follower_client.get(const.PROFILE_FOLLOW_URL)
@@ -247,10 +255,20 @@ class FollowTest(TestCase):
             msg=('После запроса "подписаться" '
                  'подписка у пользователя не появилась.'),
         )
+
+    def test_authorized_user_can_unsubscribe(self):
+        """Авторизированный пользователь может отписываться
+        от других пользователей.
+        """
+        Follow.objects.create(
+            user=FollowTest.follower,
+            author=FollowTest.author,
+        )
+        follow_count = FollowTest.follower.follower.count()
         self.follower_client.get(const.PROFILE_UNFOLLOW_URL)
         self.assertEqual(
             FollowTest.follower.follower.count(),
-            follow_count,
+            follow_count - 1,
             msg=('После запроса "отписаться"'
                  'подписка у пользователя не исчезла.'),
         )
