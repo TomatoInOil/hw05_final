@@ -16,7 +16,7 @@ def index(request):
     """
     template = settings.INDEX_TEMPLATE
 
-    post_list = Post.objects.select_related('group').all()
+    post_list = Post.objects.select_related('group', 'author').all()
     page_obj = create_page_obj(post_list, request)
 
     context = {
@@ -31,7 +31,7 @@ def group_posts(request, slug):
     отфильтрованных по группе.
     """
     group = get_object_or_404(Group, slug=slug)
-    post_list = group.posts.all()
+    post_list = group.posts.select_related('author').all()
     page_obj = create_page_obj(post_list, request)
 
     template = settings.GROUP_LIST_TEMPLATE
@@ -47,7 +47,7 @@ def profile(request, username):
     template = settings.PROFILE_TEMPLATE
 
     author = get_object_or_404(User, username=username)
-    post_list = author.posts.select_related('group').all()
+    post_list = author.posts.select_related('group',).all()
     page_obj = create_page_obj(post_list, request)
 
     following = False
@@ -64,9 +64,11 @@ def profile(request, username):
 
 def post_details(request, post_id):
     """Рендер страницы отдельного поста."""
-    post = get_object_or_404(Post, pk=post_id)
+    post = get_object_or_404(
+        Post.objects.select_related('group', 'author'), pk=post_id
+    )
 
-    comments_list = post.comments.all()
+    comments_list = post.comments.select_related('author').all()
     page_obj = create_page_obj(comments_list, request)
 
     template = settings.POST_DETAILS_TEMPLATE

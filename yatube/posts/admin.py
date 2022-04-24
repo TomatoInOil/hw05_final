@@ -21,8 +21,7 @@ class PostAdmin(admin.ModelAdmin):
         'pk',
         'text',
     )
-    list_select_related = ('author', 'group',)  # я правильно понимаю,
-    # что это уменьшит в данном случае кол-во запросов к БД?
+    list_select_related = ('author', 'group',)
     search_fields = ('text',)
     list_filter = ('pub_date',)
     list_editable = ('group',)

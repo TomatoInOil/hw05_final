@@ -12,7 +12,7 @@
     <img class="card-img my-2" src="{{ im.url }}">
   {% endthumbnail %}
   <p>
-    {{ post.text }}
+    {{ post.text|linebreaks }}
   </p>
     <a href="{% url 'posts:post_details' post.pk %}">подробная информация </a>
 </article>

@@ -36,7 +36,7 @@
             <img class="card-img my-2" src="{{ im.url }}">
           {% endthumbnail %}
           <p>
-            {{ post.text }}
+            {{ post.text|linebreaks }}
           </p>
           {% if request.user.id == post.author.id %}
             <div class="row justify-content-end">
@@ -45,7 +45,7 @@
               </div>
             </div>
           {% endif %}
-          {% if user.is_authenticated %}
+          {% if request.user.is_authenticated %}
             <div class="card my-4">
               <h5 class="card-header">Добавить комментарий:</h5>
               <div class="card-body">
@@ -69,7 +69,7 @@
                   </a>
                 </h5>
                   <p>
-                  {{ comment.text }}
+                  {{ comment.text|linebreaks }}
                   </p>
                 </div>
               </div>
