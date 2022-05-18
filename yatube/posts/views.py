@@ -1,13 +1,14 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from .factories import create_page_obj
 from .forms import CommentForm, PostForm
 from .models import Follow, Group, Post, User
+from .serializers import PostSerializer
 
 
 def index(request):
@@ -47,7 +48,9 @@ def profile(request, username):
     template = settings.PROFILE_TEMPLATE
 
     author = get_object_or_404(User, username=username)
-    post_list = author.posts.select_related('group',).all()
+    post_list = author.posts.select_related(
+        'group',
+    ).all()
     page_obj = create_page_obj(post_list, request)
 
     following = False
@@ -74,7 +77,7 @@ def post_details(request, post_id):
     template = settings.POST_DETAILS_TEMPLATE
     context = {
         'post': post,
-        'post_title': post.text[:settings.POST_TITLE_LENGTH],
+        'post_title': post.text[: settings.POST_TITLE_LENGTH],
         'form': CommentForm(),
         'page_obj': page_obj,
     }
@@ -126,7 +129,7 @@ def post_edit(request, post_id):
             'form': form,
             'is_edit': True,
             'post_id': post_id,
-            'action_url': action_url
+            'action_url': action_url,
         }
         return render(request, template, context)
 
@@ -184,3 +187,11 @@ def profile_unfollow(request, username):
     follow = get_object_or_404(Follow, author=following, user=follower)
     follow.delete()
     return redirect('posts:profile', username)
+
+
+def get_post(request, post_id):
+    """Обрабатывает запрос к API, возвращая данные об определенном посте."""
+    if request.method == 'GET':
+        post = get_object_or_404(Post, pk=post_id)
+        serializer = PostSerializer(post)
+        return JsonResponse(serializer.data)
