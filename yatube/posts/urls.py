@@ -25,5 +25,10 @@ urlpatterns = [
         views.profile_unfollow,
         name='profile_unfollow',
     ),
-    path('api/v1/posts/<int:post_id>/', views.get_post, name='api_get_post'),
+    path('api/v1/posts/', views.api_posts, name='api_posts'),
+    path(
+        'api/v1/posts/<int:post_id>/',
+        views.api_posts_detail,
+        name='api_posts_detail',
+    ),
 ]
