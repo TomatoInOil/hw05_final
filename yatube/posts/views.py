@@ -14,6 +14,7 @@ from django.shortcuts import (
 from django.urls import reverse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .factories import create_page_obj
 from .forms import CommentForm, PostForm
@@ -197,34 +198,3 @@ def profile_unfollow(request, username):
     follow = get_object_or_404(Follow, author=following, user=follower)
     follow.delete()
     return redirect('posts:profile', username)
-
-
-@api_view(['GET', 'POST'])
-def api_posts(request):
-    """При POST публикует пост. При GET возвращает все посты."""
-    if request.method == 'POST':
-        serializer = PostSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data, status=HTTPStatus.CREATED)
-        return Response(data=serializer.errors, status=HTTPStatus.BAD_REQUEST)
-    posts = get_list_or_404(klass=Post)
-    serializer = PostSerializer(posts, many=True)
-    return Response(data=serializer.data, status=HTTPStatus.OK)
-
-
-@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
-def api_posts_detail(request, post_id):
-    """Обрабатывает запросы GET, PUT, PATCH и DELETE для конкретного поста."""
-    post = get_object_or_404(klass=Post, pk=post_id)
-    if request.method == 'PUT' or request.method == 'PATCH':
-        serializer = PostSerializer(post, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data, status=HTTPStatus.OK)
-        return Response(data=serializer.errors, status=HTTPStatus.BAD_REQUEST)
-    elif request.method == 'DELETE':
-        post.delete()
-        return Response(status=HTTPStatus.NO_CONTENT)
-    serializer = PostSerializer(post)
-    return Response(data=serializer.data, status=HTTPStatus.OK)
