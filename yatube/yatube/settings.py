@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'sorl.thumbnail',
     'rest_framework',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [

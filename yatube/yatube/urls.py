@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -9,6 +10,7 @@ urlpatterns = [
     path('auth/', include('users.urls')),
     path('auth/', include('django.contrib.auth.urls')),
     path('about/', include('about.urls', namespace='about')),
+    path('api/v1/', include('api.urls', namespace='api')),
 ]
 
 handler404 = 'core.views.page_not_found'
@@ -17,6 +19,7 @@ handler403 = 'core.views.permission_denied'
 
 if settings.DEBUG:
     import debug_toolbar
+
     urlpatterns += static(
         settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
     )

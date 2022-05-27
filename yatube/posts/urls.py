@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views, views_api
+from . import views
 
 app_name = 'posts'
 
@@ -24,11 +24,5 @@ urlpatterns = [
         'profile/<str:username>/unfollow/',
         views.profile_unfollow,
         name='profile_unfollow',
-    ),
-    path('api/v1/posts/', views_api.APIPostList.as_view(), name='api_posts'),
-    path(
-        'api/v1/posts/<int:pk>/',
-        views_api.APIPostDetail.as_view(),
-        name='api_posts_detail',
     ),
 ]
