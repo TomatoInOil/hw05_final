@@ -1,10 +1,10 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from posts.models import Post
 from .serializers import PostSerializer
 
 
-class PostViewSet(ModelViewSet):
+class PostViewSet(ReadOnlyModelViewSet):
     """Реализация CRUD для модели Post."""
 
     queryset = Post.objects.all()
