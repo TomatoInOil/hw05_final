@@ -7,6 +7,7 @@ app_name = 'api'
 
 router = DefaultRouter()
 router.register('posts', views.PostViewSet, basename='posts')
+router.register('group', views.GroupViewSet, basename='group')
 
 urlpatterns = [
     path('', include(router.urls)),

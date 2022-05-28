@@ -26,6 +26,15 @@ class Group(models.Model):
         return self.title
 
 
+class Tag(models.Model):
+    """Модель тэгов, которые можно прикрепить к посту."""
+
+    name = models.CharField(max_length=32)
+
+    def __str__(self):
+        return self.name
+
+
 class Post(PubDateModel):
     """Модель публикации на сайте."""
 
@@ -52,16 +61,29 @@ class Post(PubDateModel):
         'Картинка',
         upload_to=settings.POST_IMAGE_UPLOAD_TO,
         blank=True,
-        help_text=('Вы можете прикрепить картинку к вашему посту. '
-                   'Рекомендуемый размер картинки: 960x339'),
+        help_text=(
+            'Вы можете прикрепить картинку к вашему посту. '
+            'Рекомендуемый размер картинки: 960x339'
+        ),
     )
+    tag = models.ManyToManyField(Tag, through='TagPost')
 
     class Meta(PubDateModel.Meta):
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
 
     def __str__(self) -> str:
-        return self.text[:settings.POST_STR_LENGTH]
+        return self.text[: settings.POST_STR_LENGTH]
+
+
+class TagPost(models.Model):
+    """Связь тегов и постов."""
+
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.tag} {self.post}'
 
 
 class Comment(PubDateModel):
@@ -89,7 +111,7 @@ class Comment(PubDateModel):
         verbose_name_plural = 'Комментарии'
 
     def __str__(self) -> str:
-        return self.text[:settings.COMMENT_STR_LENGTH]
+        return self.text[: settings.COMMENT_STR_LENGTH]
 
 
 class Follow(models.Model):
@@ -114,16 +136,15 @@ class Follow(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'],
-                name='excluding_duplicate_subscriptions'
+                name='excluding_duplicate_subscriptions',
             ),
             models.CheckConstraint(
-                check=~models.Q(user=models.F('author')),
-                name='not_the_author'
+                check=~models.Q(user=models.F('author')), name='not_the_author'
             ),
         ]
 
     def __str__(self) -> str:
         follower_username = self.user.username
         following_username = self.author.username
-        text = (f'{follower_username} подписан на {following_username}')
+        text = f'{follower_username} подписан на {following_username}'
         return text
