@@ -18,10 +18,32 @@ class PostSerializer(serializers.ModelSerializer):
         queryset=Group.objects.all(), required=False, slug_field='slug'
     )
     tag = TagSerializer(many=True, required=False)
+    character_quantity = serializers.SerializerMethodField()
+    publication_date = serializers.DateTimeField(
+        read_only=True, source='pub_date'
+    )
 
     class Meta:
         model = Post
-        fields = ('id', 'text', 'image', 'author', 'pub_date', 'group', 'tag')
+        fields = (
+            'id',
+            'text',
+            'image',
+            'author',
+            'publication_date',
+            'group',
+            'tag',
+            'character_quantity',
+        )
+
+    def get_character_quantity(self, obj: Post):
+        """Вычисление количества символов в посте."""
+        all_characters = len(obj.text)
+        without_spaces = all_characters - obj.text.count(" ")
+        return {
+            'all_characters': all_characters,
+            'without_spaces': without_spaces,
+        }
 
     def create(self, validated_data: dict):
         """Создание с возможностью изменения группы."""
@@ -55,7 +77,7 @@ class PostSerializer(serializers.ModelSerializer):
             for tag in received_tags:
                 current_tag, status = Tag.objects.get_or_create(**tag)
                 TagPost.objects.create(tag=current_tag, post=instance)
-                
+
         instance.save()
 
         return instance
