@@ -12,15 +12,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '&hie#ixfyar_=imerm+%6lum3$yn#%3_(a1gr@zu7lcr8ts)!('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '[::1]',
     'testserver',
-    'www.danpautoff.pythonanywhere.com',
-    'danpautoff.pythonanywhere.com',
 ]
 
 
@@ -129,10 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-if DEBUG:
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
