@@ -19,6 +19,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     'testserver',
+    '84.252.139.65',
+    'thebestyatube.sytes.net',
 ]
 
 
