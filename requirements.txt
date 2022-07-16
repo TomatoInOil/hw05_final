@@ -30,3 +30,4 @@ toml==0.10.2
 tomli==2.0.1
 urllib3==1.26.9
 djangorestframework==3.13.1
+python-dotenv==0.20.0
