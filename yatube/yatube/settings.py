@@ -95,7 +95,8 @@ DATABASES = {
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT')
+        'PORT': os.getenv('DB_PORT'),
+        'DISABLE_SERVER_SIDE_CURSORS': os.getenv('DISABLE_SERVER_SIDE_CURSORS'),
     }
 } 
 
